@@ -6,6 +6,15 @@ import data from './data';
 function App() {
     const [people, setPeople] = useState(data);
     const [index, setIndex] = useState(1);
+
+    useEffect(() => {
+        let slider = setInterval(() => {
+            index === 0 ? setIndex(people.length - 1) : setIndex(index - 1);
+        }, 2000);
+        return () => clearInterval(slider)
+    }, [index])
+
+
     return ( <
         section className = 'section' >
         <
@@ -16,6 +25,13 @@ function App() {
         div className = 'section-center' > {
             people.map((person, personIndex) => {
                 const { id, image, name, title, quote } = person;
+                let position = "nextSlide";
+                if (personIndex === index) {
+                    position = "activeSlide";
+                }
+                if (personIndex === index - 1 || (personIndex === people.length - 1 && index === 0)) {
+                    position = "lastSlide";
+                }
                 return ( <
                     article key = { id } >
                     <
@@ -32,8 +48,12 @@ function App() {
                 );
             })
         } <
-        button className = 'prev' > < FiChevronLeft / > < /button> <
-        button className = 'next' > < FiChevronRight / > < /button> <
+        button className = 'prev'
+        onClick = {
+            () => index === 0 ? setIndex(people.length - 1) : setIndex(index - 1) } > < FiChevronLeft / > < /button> <
+        button className = 'next'
+        onClick = {
+            () => index === people.length - 1 ? setIndex(0) : setIndex(index + 1) } > < FiChevronRight / > < /button> <
         /div> <
         /section>
     );
